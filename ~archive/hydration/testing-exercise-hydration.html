@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="robots" content="noindex">
+		<meta name="googlebot" content="noindex">
+		<meta name="bingbot" content="noindex">		
+		<meta name="baiduspider" content="noindex">
+
+		<title>Website Testing</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	</head>
+<body>
+
+	<div>
+
+		<h1>Start</h1>
+
+		<h3>KG Input</h3>
+		
+		<input type="text" class="desktop-kg-pre-exercise-input">
+		<input type="text" class="desktop-kg-post-exercise-input">
+		<input type="text" class="desktop-kg-fluid-intake-input">
+		Sweat Loss (L): <span class="desktop-output-kg-sweat-loss"></span>
+
+		<h3>LB Input</h3>
+		
+		<input type="text" class="desktop-lb-pre-exercise-input">
+		<input type="text" class="desktop-lb-post-exercise-input">
+		<input type="text" class="desktop-lb-fluid-intake-input">
+		Sweat Loss (oz): <span class="desktop-output-lb-sweat-loss"></span>
+	</div>
+	<div>
+		<h3>Exercise Time</h3>
+		
+		<input type="text" class="desktop-exercise-time-input">
+	</div>
+		<h3>Calculate Sweat Rate (KG)</h3>
+		
+		Sweat Loss: <span class="desktop-output-kg-sweat-loss"></span>
+		<br><br>
+		Exercise Time: <span class="desktop-output-exercise-time"></span>
+		<br><br>
+		Sweat Rate: <span class="desktop-output-kg-sweat-rate-total"></span>
+	</div>
+	<div>
+		<h3>Calculate Sweat Rate (LB)</h3>
+		
+		Sweat Loss: <span class="desktop-output-lb-sweat-loss"></span>
+		<br><br>
+		Exercise Time: <span class="desktop-output-exercise-time"></span>
+		<br><br>
+		Sweat Rate: <span class="desktop-output-lb-sweat-rate-total"></span>
+	</div>
+
+	<script>
+		// KG Calculation
+		jQuery(function(){
+			desktopKgPreExerciseInput = '.desktop-kg-pre-exercise-input';
+			desktopKgPostExerciseInput = '.desktop-kg-post-exercise-input';
+			desktopKgFluidEntakeInput = '.desktop-kg-fluid-intake-input';
+			desktopOutputKgSweatLoss = '.desktop-output-kg-sweat-loss';
+
+			exerciseTimeInput = '.desktop-exercise-time-input';
+			
+			kgOutputExerciseTime = '.desktop-output-exercise-time';
+			kgOutputSweatRateTotal = '.desktop-output-kg-sweat-rate-total';
+			
+			jQuery( desktopKgFluidEntakeInput ).on('change', function() {
+				let DesktopKgCalulationOne = $(desktopKgPreExerciseInput).val();
+				let DesktopKgCalulationTwo = $(desktopKgPostExerciseInput).val();
+				let DesktopKgCalulationThree = $(desktopKgFluidEntakeInput).val();
+				let DesktopKgOutputOne = Number(DesktopKgCalulationOne) - Number(DesktopKgCalulationTwo) + Number(DesktopKgCalulationThree);
+				
+				$(desktopOutputKgSweatLoss).html(DesktopKgOutputOne);				
+			});
+
+			jQuery( exerciseTimeInput ).on('change', function() {				
+				let CalculateSweatLossInput = $(desktopOutputKgSweatLoss).html();
+				let CalculateExerciseTimeInput = $(exerciseTimeInput).val();
+
+				$(kgOutputExerciseTime).html(CalculateExerciseTimeInput);
+
+				kgSweatRateTotal = Number(CalculateSweatLossInput) / Number(CalculateExerciseTimeInput);
+
+				$(kgOutputSweatRateTotal).html(kgSweatRateTotal);
+			});
+
+		});
+
+		// LB Calculation
+		jQuery(function(){
+			desktopLbPreExerciseInput = '.desktop-lb-pre-exercise-input';
+			desktopLbPostExerciseInput = '.desktop-lb-post-exercise-input';
+			desktopLbFluidEntakeInput = '.desktop-lb-fluid-intake-input';
+			desktopOutputLbSweatLoss = '.desktop-output-lb-sweat-loss';
+
+			lbOutputSweatRateTotal = '.desktop-output-lb-sweat-rate-total';
+			
+			jQuery( desktopLbFluidEntakeInput ).on('change', function() {
+				let DesktopLbCalulationOne = $(desktopLbPreExerciseInput).val();
+				let DesktopLbCalulationTwo = $(desktopLbPostExerciseInput).val();
+				let DesktopLbCalulationThree = $(desktopLbFluidEntakeInput).val();
+				let DesktopLbOutputOne = Number(DesktopLbCalulationOne) - Number(DesktopLbCalulationTwo) + Number(DesktopLbCalulationThree);				
+				
+				$(desktopOutputLbSweatLoss).html(DesktopLbOutputOne);
+			});
+
+			jQuery( exerciseTimeInput ).on('change', function() {				
+				let CalculateSweatLossInput = $(desktopOutputLbSweatLoss).html();
+				let CalculateExerciseTimeInput = $(exerciseTimeInput).val();
+
+				$(kgOutputExerciseTime).html(CalculateExerciseTimeInput);
+
+				lbSweatRateTotal = Number(CalculateSweatLossInput) / Number(CalculateExerciseTimeInput);
+
+				$(lbOutputSweatRateTotal).html(lbSweatRateTotal);
+			});
+		});
+
+	</script>
+
+</body>
+</html>

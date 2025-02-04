@@ -1,0 +1,164 @@
+<script async="async" src="//consent.trustarc.com/notice?domain=pepsico-na-beverages.com&c=teconsent&gtm=1&text=true&js=nj&noticeType=bb&language=en" crossorigin=""></script>
+<script>
+    var MY_DOMAIN = "pepsico-na-beverages.com";
+    var REQUIRE_USER_EXPRESSED_PERMISSION = true;
+    var _STATE = {};
+
+    function runOnce() {
+        //CHECK: for API exists on the page
+        if (!_STATE.hasRunOnce && window.PrivacyManagerAPI) {
+
+            //Register with the API for automatic updates of user preferences (for the settings you care about)
+            //--OR-- if the API is loading, then this will send an update when the API is done and has loaded the user preferences.
+            window.addEventListener("message", function (e) {
+                try {
+                    var json = JSON.parse(e.data);
+                    json.PrivacyManagerAPI && handleAPIResponse(json.PrivacyManagerAPI);
+
+
+                } catch (e) {
+                    e.name != 'SyntaxError' && console.log(e);
+                }
+            }, false);
+            var apiObject = { PrivacyManagerAPI: { self: MY_DOMAIN, action: "getConsent", timestamp: new Date().getTime(), type: "functional" } };
+            window.top.postMessage(JSON.stringify(apiObject), "*");
+            apiObject = { PrivacyManagerAPI: { self: MY_DOMAIN, action: "getConsent", timestamp: new Date().getTime(), type: "advertising" } };
+            window.top.postMessage(JSON.stringify(apiObject), "*");
+
+            _STATE.hasRunOnce = true;
+            _STATE.i && clearInterval(_STATE.i);
+
+        }
+    }
+
+    /**
+    * This function returns value of notice_behavior cookie to determine location and behavior manager based on domain.
+    * When no notice_behavior cookie exists, this returns a blank string.
+    */
+    function getBehavior() {
+        var result = "";
+        var rx = new RegExp("\\s*notice_behavior\\s*=\\s*([^;]*)").exec(document.cookie);
+        if (rx && rx.length > 1) {
+            result = rx[1];
+        }
+        return result;
+    }
+
+    /**
+    * This function is called whenever a user preference is initially set, is retrieved for the first time on this page, or is updated.
+    * This is the gateway function which should be customized by each client (you) to determine when and how to handle the API response.
+    *
+    * The second half of the function determines settings from the CM API, and decides which elements on the page should be "activated" based upon those settings.
+    * Elements can only be activated once. Elements can not be deactivated, once activated.
+    */
+    function handleAPIResponse(response) {
+        //CHECK: make sure this response is to YOU. You will actually get the messages to all API callers on this page, not just to you.
+        if (!response.source || response.self != MY_DOMAIN) return;
+
+        //Required trackers/cookies are always allowed, no need to ask permission.
+        if (!_STATE.hasLoadedRequired) {
+            activateElement(document.querySelectorAll(".trustecm[trackertype=required]"));
+            _STATE.hasLoadedRequired = true;
+        }
+
+        // Check if behavior manager is EU
+        var isEU = /.*(,|)eu/i.test(getBehavior());
+
+        //Case where we don't want to do anything till the user has made a preference.
+        if (isEU && REQUIRE_USER_EXPRESSED_PERMISSION && response.source != "asserted") return;
+
+        //Step 1) Get Consent Manager settings (user prefs)
+        //        These API calls are DIFFERENT than the original API call ("response" parameter) so they must be called separately.
+        //Step 2) Apply the settings after checking if approved
+        var setting = null;
+
+        if (!_STATE.hasLoadedAdvertising) {
+            setting = PrivacyManagerAPI.callApi("getConsent", MY_DOMAIN, null, null, "advertising");
+            if (setting.consent == "approved") {
+                activateElement(document.querySelectorAll(".trustecm[trackertype=advertising]"));
+                _STATE.hasLoadedAdvertising = true;
+            }
+        }
+        if (!_STATE.hasLoadedFunctional) {
+            setting = PrivacyManagerAPI.callApi("getConsent", MY_DOMAIN, null, null, "functional");
+            if (setting.consent == "approved") {
+                activateElement(document.querySelectorAll(".trustecm[trackertype=functional]"));
+                _STATE.hasLoadedFunctional = true;
+            }
+        }
+
+        // No additional checking, this always fires, but only after a user has consented
+        if (!_STATE.hasLoadedAnyConsent) {
+            activateElement(document.querySelectorAll(".trustecm[trackertype=any]"));
+            _STATE.hasLoadedAnyConsent = true;
+        }
+
+        window.PrivacyVideo();
+
+        if (window.HasDisabledVideos) {
+            location.reload();
+        }
+
+        //check of vendor domain and fires if that domain is approved, which is based on how that domain was categorized on the backend
+        var vendors = document.querySelectorAll(".trustecm[trackertype=vendor]");
+        for (var i = 0; i < vendors.length; i++) {
+            var currentVendor = vendors[i];
+            var vDomain = currentVendor.getAttribute("vsrc");
+            if (vDomain && !_STATE['hasLoaded' + vDomain]) {
+                setting = PrivacyManagerAPI.callApi("getConsent", MY_DOMAIN, vDomain);
+                if (setting.consent == "approved") {
+                    activateElement(document.querySelectorAll(".trustecm[trackertype=vendor][vsrc='" + vDomain + "']"));
+                    _STATE['hasLoaded' + vDomain] = true;
+                }
+            }
+        }
+    }
+
+    function activateElement(list) {
+        if (!(list instanceof Array || list instanceof NodeList)) throw "Illegal argument - must be an array";
+        for (var item, i = list.length; i-- > 0;) {
+            item = list[i];
+            item.class = "trustecm_done";
+            switch (item.nodeName.toLowerCase()) {
+                case "script":
+                    var z = item.getAttribute("thesrc");
+                    if (z) {
+                        var y = document.createElement("script");
+                        y.src = z;
+                        y.async = item.async;
+                        var attributes = getAttributes(item);
+                        Object.keys(attributes).forEach(key => {
+                            if (key !== 'type') y.setAttribute(key, attributes[key]);
+                        });
+
+                        item.parentNode.insertBefore(y, item);
+                    } else eval(item.text || item.textContent || item.innerText);
+            }
+        }
+    }
+    _STATE.i = setInterval(runOnce, 10);
+
+    function getAttributes(node) {
+        var i,
+            attributeNodes = node.attributes,
+            length = attributeNodes.length,
+            attrs = {};
+
+        for (i = 0; i < length; i++) attrs[attributeNodes[i].name] = attributeNodes[i].value;
+        return attrs;
+    }
+</script>
+<script type="text/plain" class="trustecm" trackertype="advertising">
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-M8TFVWH');
+</script>
+
+<div class="cookieConsent js-cookie-consent" style="position: fixed; bottom: -2px; left: 0; width: 100%; z-index: 99999;">
+    <div id="consent_blackbar"></div>
+</div>

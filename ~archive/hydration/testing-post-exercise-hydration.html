@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="robots" content="noindex">
+		<meta name="googlebot" content="noindex">
+		<meta name="bingbot" content="noindex">		
+		<meta name="baiduspider" content="noindex">
+
+		<title>Website Testing</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	</head>
+<body>
+
+	<div>
+
+		<h1>Post Exercise</h1>
+
+		<h3>kg Input</h3>
+		
+		<input type="text" class="desktop-kg-pre-body-mass-input">
+		<input type="text" class="desktop-kg-post-body-mass-input">
+		Body Mass(kg): <span class="desktop-output-kg-body-mass-loss"></span>
+
+		<h3>lbs Input</h3>
+		
+		<input type="text" class="desktop-lb-pre-body-mass-input">
+		<input type="text" class="desktop-lb-post-body-mass-input">
+		Body Mass (lbs): <span class="desktop-output-lb-body-mass-loss"></span>
+	</div>
+	<div>
+		<h3>Calculation (l)</h3>
+		
+		120% Replacement: <span class="desktop-output-l-120"></span>
+		<br><br>
+		150% Replacement: <span class="desktop-output-l-150"></span>
+	</div>
+	<div>
+		<h3>Calculation (oz)</h3>
+		
+		120% Replacement: <span class="desktop-output-oz-120"></span>
+		<br><br>
+		150% Replacement: <span class="desktop-output-oz-150"></span>
+	</div>
+
+	<script>
+		// KG Calculation
+		jQuery(function(){
+			desktopKgPreExerciseInput = '.desktop-kg-pre-body-mass-input';
+			desktopKgPostExerciseInput = '.desktop-kg-post-body-mass-input';
+			desktopOutputKgMassLoss = '.desktop-output-kg-body-mass-loss';
+
+			desktopOutputL120 = '.desktop-output-l-120';
+			desktopOutputL150 = '.desktop-output-l-150';
+			
+			jQuery( desktopKgPostExerciseInput ).on('change', function() {
+				let DesktopKgCalulationOne = $(desktopKgPreExerciseInput).val();
+				let DesktopKgCalulationTwo = $(desktopKgPostExerciseInput).val();
+				let DesktopKgOutputOne = Number(DesktopKgCalulationOne) - Number(DesktopKgCalulationTwo);
+				
+				$(desktopOutputKgMassLoss).html(DesktopKgOutputOne);
+				
+				let replacement120 = Number(DesktopKgOutputOne) * 1.2;
+				let replacement150 = Number(DesktopKgOutputOne) * 1.5;
+
+				$(desktopOutputL120).html(replacement120);
+				$(desktopOutputL150).html(replacement150);
+			});
+
+
+		});
+
+		// LB Calculation
+		jQuery(function(){
+			desktopLbPreExerciseInput = '.desktop-lb-pre-body-mass-input';
+			desktopLbPostExerciseInput = '.desktop-lb-post-body-mass-input';
+			desktopOutputLbSweatLoss = '.desktop-output-lb-body-mass-loss';
+
+			desktopOutputOz120 = '.desktop-output-oz-120';
+			desktopOutputOz150 = '.desktop-output-oz-150';
+			
+			jQuery( desktopLbPostExerciseInput ).on('change', function() {
+				let DesktopLbCalulationOne = $(desktopLbPreExerciseInput).val();
+				let DesktopLbCalulationTwo = $(desktopLbPostExerciseInput).val();
+				let DesktopLbOutputOne = Number(DesktopLbCalulationOne) - Number(DesktopLbCalulationTwo);
+				
+				$(desktopOutputLbSweatLoss).html(DesktopLbOutputOne);
+
+				let replacement120 = Number(DesktopLbOutputOne) * 1.2;
+				let replacement150 = Number(DesktopLbOutputOne) * 1.5;
+
+				$(desktopOutputOz120).html(replacement120);
+				$(desktopOutputOz150).html(replacement150);
+			});
+		});
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+.pageItem--input {
+    background-color: transparent;
+    border: 0;
+}
+
+.pageItem--desktop {
+    text-align: center;
+    display: grid;
+    place-content: center;
+    font-family: arial;
+    font-weight: 500;
+}

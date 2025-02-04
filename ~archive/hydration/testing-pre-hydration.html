@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<meta name="robots" content="noindex">
+		<meta name="googlebot" content="noindex">
+		<meta name="bingbot" content="noindex">		
+		<meta name="baiduspider" content="noindex">
+
+		<title>Website Testing</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	</head>
+<body>
+
+	<div>
+
+		<h1>Start</h1>
+		
+		<input type="text" class="desktop-input">
+
+		<h3>Body mass</h3>
+		<span class="desktop-output desktop-output--bodymass"></span>
+
+		<hr>
+
+		<h3>by 5</h3>
+		<span class="desktop-output desktop-output--by5"></span>
+
+		<h3>by 7</h3>
+		<span class="desktop-output desktop-output--by7"></span>
+
+		<h3>by 3</h3>
+		<span class="desktop-output desktop-output--by3"></span>
+
+		<h3>by 5</h3>
+		<span class="desktop-output desktop-output--by5"></span>
+	</div>
+
+	<script>
+		jQuery(function(){
+			fieldInput = '.desktop-input';
+			fieldOutput = '.desktop-output--bodymass';
+
+			fieldOutputBy3 = '.desktop-output--by3';
+			fieldOutputBy5 = '.desktop-output--by5';
+			fieldOutputBy7 = '.desktop-output--by7';
+
+			jQuery( fieldInput ).on('change', function() {
+				const initialValue = $(fieldInput).val();
+				
+				const bodyMassKgs = initialValue / 2.205;
+				const calculateBy3 = bodyMassKgs * 3;
+				const calculateBy5 = bodyMassKgs * 5;
+				const calculateBy7 = bodyMassKgs * 7;
+				
+				$(fieldOutput).html((bodyMassKgs).toFixed(2));
+				$(fieldOutputBy3).html((calculateBy3).toFixed(2));
+				$(fieldOutputBy5).html((calculateBy5).toFixed(2));
+				$(fieldOutputBy7).html((calculateBy7).toFixed(2));
+			});
+		});
+	</script>
+
+</body>
+</html>
